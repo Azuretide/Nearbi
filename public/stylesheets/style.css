@@ -1,0 +1,109 @@
+/*Main*/
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/*Navigation Bar*/
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #33cccc;
+    top: 0;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+a.nearbi {
+    font: 24px "Segoe UI";
+    font-weight: bold;
+    padding: 5px;
+}
+
+li a.dropdown:hover, .dropdown:hover .dropbtn {
+    background-color: #009999;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    right: 0;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+div.search {
+    margin: auto;
+}
+
+input {
+  padding: 7px;
+  border-radius: 4px;
+  width:350px;
+}
+
+button {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 14px;
+  font-weight: lighter;
+}
+
+/*Main Page*/
+div.map-container {
+    background-color: #a3ccff;
+    position:absolute;
+    left:0;
+    width:70%;
+    height: calc(100% - 44px);
+}
+
+div.event-pane {
+    background-color: white;
+    color: #009999;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    position:absolute;
+    left:70%;
+    width:30%;
+    height: calc(100% - 44px);
+}
+/*+2px to subtracted height for firefox*/
+
+div.event-detail {
+    padding: 20px;
+}
