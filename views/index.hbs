@@ -4,6 +4,7 @@
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/moment.js"></script>
     <script src="/js/module.js"></script>
     <style>
        #map {
@@ -20,11 +21,15 @@
         <button class="search-submit">Search</button>
       </div></li>
       <li style="float: right" class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">Hi, UserName</a>
+        {{#if user}}
+        <a href="javascript:void(0)" class="dropbtn">Hi, {{user.username}}</a>
           <div class="dropdown-content">
-            <a href="#">Account</a>
-            <a href="#">Logout</a>
+            <a href="/#">Account</a>
+            <a href="/logout">Logout</a>
           </div>
+        {{else}}
+        <a href="/login">Login</a>
+        {{/if}}
       </li>
     </ul>
 
@@ -40,6 +45,8 @@
       <div class="event-detail">
         <h1>Event Pane</h1>
         <p class="content">Welcome to {{title}}! Event details will show up here. To get started, search for a location and click on a pointer on the map.</p>
+<!--         <script src="/js/event-api.js"></script> -->
+        <div id="event-data"></div>
       </div>
     </div>
   

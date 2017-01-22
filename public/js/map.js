@@ -40,6 +40,7 @@ function initMap() {
                 console.log("Returned place contains no geometry");
                 return;
             }
+            var testim = "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
             var icon = {
                 url: place.icon,
                 size: new google.maps.Size(71, 71),
@@ -51,7 +52,7 @@ function initMap() {
             // Create a marker for each place.
             markers.push(new google.maps.Marker({
                 map: map,
-                icon: icon,
+                icon: testim,
                 title: place.name,
                 position: place.geometry.location
             }));
@@ -65,8 +66,50 @@ function initMap() {
         });
         map.fitBounds(bounds);
     
-        //Include mapping event location code below, done after place change.
-        //Begin
-        console.log(markers);
+        //Mapping the event locations (hard-coded for now)
+        $.ajax({
+            url: '/getevents',
+            data: {},
+            type: 'GET',
+            success: function(data) {
+                // for (i=0;i<12;i++) {
+                for (i=0;i<data.length;i++) {
+                    var marker = new google.maps.Marker({
+                        position: {lat: Number(data[i].latitude), lng: Number(data[i].longitude)},
+                        map: map,
+                        info: data[i]
+                    });
+
+                    var now = moment("2017-01-21T18:15:00");
+                    // var now = moment();
+
+                    if (now.isAfter(moment(data[i].end))) {
+                        marker.setVisible(false);
+                    }
+                    else if (now.isBefore(moment(data[i].start))) {
+                        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
+                    }
+                    else if (now.isAfter(moment(data[i].start)) && now.isBefore(moment(data[i].end))) {
+                        if (now.isAfter(moment(data[i].end).subtract(30, 'minutes'))) {
+                            marker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
+                        }
+                        else {
+                            marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+                        }
+                    }
+
+                    marker.addListener('click', function() {
+                        var self = this;
+                        console.log(self);
+                        console.log(self.info.name);
+                    });
+
+                    markers.push(marker);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Uh oh there was an error: " + error);
+            }
+        });
     });
 }

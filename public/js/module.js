@@ -2,6 +2,7 @@
 $(document).ready(function() {
 	$(".search-submit").on('click', function() {
 		console.log("query submitted!");
+		console.log(moment());
 		$(".searchBox").val("");
 	});
 
