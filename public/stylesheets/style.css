@@ -3,15 +3,22 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /*Navigation Bar*/
-ul {
+ul.navbar {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
     background-color: #33cccc;
+    color: white;
     top: 0;
 }
 
@@ -33,7 +40,7 @@ a.nearbi {
     padding: 5px;
 }
 
-li a.dropdown:hover, .dropdown:hover .dropbtn {
+li a.dropdown:hover, .dropdown:hover, .login:hover .dropbtn {
     background-color: #009999;
 }
 
@@ -72,7 +79,7 @@ div.search {
 input {
   padding: 7px;
   border-radius: 4px;
-  width:350px;
+  width: 400px;
 }
 
 button {
@@ -101,9 +108,16 @@ div.event-pane {
     left:70%;
     width:30%;
     height: calc(100% - 44px);
+    overflow: auto;
 }
 /*+2px to subtracted height for firefox*/
 
 div.event-detail {
+    max-width: 100%;
+    max-height: 100%;
     padding: 20px;
+}
+
+div.template {
+  display: none;
 }

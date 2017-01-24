@@ -7,6 +7,13 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	//Clear the database
+	Event.remove({}, function(err,result) {
+		if (err) {
+			console.log('An error occurred!');
+		}
+		// console.log('Events cleared!');
+	});
 	res.render('index', { 
   	title: 'Nearbi',
   	user: req.user });
@@ -64,7 +71,7 @@ router.post('/uploadevents', function(req, res, next) {
 		'name':data.name.text,
 		'id':data.id,
 		'address':data.venue.address,
-		'description':data.description.text,
+		'description':data.description.html,
 		'start':data.start.local,
 		'end':data.end.local,
 		'latitude':data.venue.latitude,

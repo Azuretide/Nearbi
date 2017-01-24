@@ -3,6 +3,7 @@
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- <link rel="shortcut icon" href="favicon.ico" /> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/js/moment.js"></script>
     <script src="/js/module.js"></script>
@@ -14,11 +15,11 @@
     </style>
   </head>
   <body>
-    <ul>
+    <ul class="navbar">
       <li><a href="/" class="nearbi">Nearbi</a></li>
       <li><div class='search'>
         <input type="text" placeholder="Enter a location" id="searchBox">
-        <button class="search-submit">Search</button>
+        <!-- <button class="search-submit">Search</button> -->
       </div></li>
       <li style="float: right" class="dropdown">
         {{#if user}}
@@ -28,7 +29,7 @@
             <a href="/logout">Logout</a>
           </div>
         {{else}}
-        <a href="/login">Login</a>
+        <a href="/login" class="login">Login</a>
         {{/if}}
       </li>
     </ul>
@@ -44,11 +45,16 @@
     <div class="event-pane">
       <div class="event-detail">
         <h1>Event Pane</h1>
-        <p class="content">Welcome to {{title}}! Event details will show up here. To get started, search for a location and click on a pointer on the map.</p>
-<!--         <script src="/js/event-api.js"></script> -->
-        <div id="event-data"></div>
+        <p class="tutorial">Welcome to {{title}}! Event details will show up here. To get started, search for a location and click on a pointer on the map.</p>
+        <!-- <script src="/js/event-api.js"></script> -->
       </div>
     </div>
   
+    <div class="template">
+      <h2 id="name">Event Name</h3>
+      <h4 id="time">12:00AM</h4>
+      <h4 id="address">100 Wayward Way</h4>
+      <div id='description'>Event description goes here!</div>
+    </div>
   </body>
 </html>

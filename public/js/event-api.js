@@ -1,10 +1,14 @@
 // Code for handling event api requests
 
 //For Eventbrite API
+var lat = "&location.latitude=" + "42.360"
+var lng = "&location.longitude=" + "-71.0589"
+
 var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&location.latitude=42.360&location.longitude=-71.0589&start_date.keyword=today&token=ZYKD3KHDFOVXM5BHSLXO&expand=venue",
+    // "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&start_date.keyword=today&token=ZYKD3KHDFOVXM5BHSLXO&expand=venue&location.latitude=42.360&location.longitude=-71.0589",
     "method": "GET",
     "headers": {}
   }
