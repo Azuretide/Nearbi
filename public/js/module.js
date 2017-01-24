@@ -1,4 +1,6 @@
-//Code for main webpage
+//Code for elements not tied to API's
+// console.log(process.env.EVENTBRITE_API);
+
 $(document).ready(function() {
 	$(".search-submit").on('click', function() {
 		console.log("query submitted!");
@@ -6,17 +8,4 @@ $(document).ready(function() {
 		$(".searchBox").val("");
 	});
 
-	// $(".add-submit").on('click', function() {
-	// 	$.ajax({
-	// 		url: '/adduser',
-	// 		type: 'POST',
-	// 		data: {
-	// 			username: $(".username-add").val(),
-	// 			userfruit: $(".userfruit-add").val(),
-	// 		},
-	// 		success: function (data) {
-	// 			$(".add-output").text(data);
-	// 		}
-	// 	});
-	// });
 });

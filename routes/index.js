@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
 		if (err) {
 			console.log('An error occurred!');
 		}
-		// console.log('Events cleared!');
+		console.log('Events cleared!');
 	});
 	res.render('index', { 
   	title: 'Nearbi',
@@ -65,29 +65,46 @@ router.post('/signup', function (req, res, next) {
 });
 
 router.post('/uploadevents', function(req, res, next) {
-	var data = req.body;
+	var data = req.body.data;
 	
-	var newEvent = new Event({
-		'name':data.name.text,
-		'id':data.id,
-		'address':data.venue.address,
-		'description':data.description.html,
-		'start':data.start.local,
-		'end':data.end.local,
-		'latitude':data.venue.latitude,
-		'longitude':data.venue.longitude,
-		'url':data.url
-	});
-	//Check for duplicates
-	Event.find({'id': data.id}, function(err, found) {
+	//Clear the database of old events
+	Event.remove({}, function(err,result) {
 		if (err) {
-  			console.log('Error!');
+			console.log('An error occurred!');
 		}
-
-		if (found.length === 0) {
-  			newEvent.save();
-		}
+		console.log('Events cleared!');
 	});
+
+	//Populate database with new events
+	for (i=0;i<data.length;i++) {
+		var newEvent = new Event({
+			'name':data[i].name.text,
+			'id':data[i].id,
+			'address':data[i].venue.address,
+			'description':data[i].description.html,
+			'start':data[i].start.local,
+			'end':data[i].end.local,
+			'latitude':data[i].venue.latitude,
+			'longitude':data[i].venue.longitude,
+			'url':data[i].url
+		});
+
+		newEvent.save();
+
+		//Check for duplicates (non-working)
+		// Event.find({'id': data[i].id}, function(err, found) {
+		// 	if (err) {
+	 //  			console.log('Error!');
+		// 	}
+
+		// 	if (found.length === 0) {
+	 //  			var self = this;
+	 //  			console.log(self);
+	 //  			// console.log(newEvent.name);
+	 //  			// newEvent.save();
+		// 	}
+		// });
+	}	
 
     res.send({
     	message: "Event information uploaded!"

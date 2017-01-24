@@ -44,7 +44,7 @@ function initMap() {
             }
 
             // Create a marker for each place.
-            var yourIcon = "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+            var yourIcon = "http://maps.google.com/mapfiles/marker_purple.png";
             markers.push(new google.maps.Marker({
                 map: map,
                 icon: yourIcon,
@@ -71,130 +71,86 @@ function initMap() {
             }
 
             $.ajax(settings).done(function (data) {
-        
-                for (i=0;i<data.events.length;i++) {
+                $.ajax({
+                    url: '/uploadevents',
+                    data: {data: data.events},
+                    dataType:"json",
+                    type: 'POST',
+                    success: function(data) {
+                        //Nothing to do here
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Uh oh there was an error: " + error);
+                    }
+                }).done(function () {
                     $.ajax({
-                        url: '/uploadevents',
-                        data: data.events[i],
-                        dataType:"json",
-                        type: 'POST',
+                        url: '/getevents',
+                        data: {},
+                        type: 'GET',
                         success: function(data) {
-                            //Nothing to do here
+                            // for (i=0;i<1;i++) {
+                            for (i=0;i<data.length;i++) {
+                                var marker = new google.maps.Marker({
+                                    position: {lat: Number(data[i].latitude), lng: Number(data[i].longitude)},
+                                    map: map,
+                                    animation: null,
+                                    icon: "http://maps.google.com/mapfiles/marker_white.png",
+                                    info: data[i]
+                                });
+
+                                //Selecting marker color based on event timing
+                                var now = moment();
+                                if (now.isAfter(moment(data[i].end))) {
+                                    marker.setVisible(false);
+                                }
+                                else if (now.isBefore(moment(data[i].start))) {
+                                    marker.setIcon("http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
+                                }
+                                else if (now.isAfter(moment(data[i].start)) && now.isBefore(moment(data[i].end))) {
+                                    if (now.isAfter(moment(data[i].end).subtract(30, 'minutes'))) {
+                                        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
+                                    }
+                                    else {
+                                        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+                                    }
+                                }
+
+                                marker.addListener('click', function() {
+                                    var self = this;
+
+                                    //Toggle bounce animation for selected marker
+                                    if (self.getAnimation() !== null) {
+                                        self.setAnimation(null);
+                                    } else {
+                                        for (i=0;i<markers.length;i++) {
+                                            markers[i].setAnimation(null);
+                                        }
+                                        self.setAnimation(google.maps.Animation.BOUNCE);
+                                    }
+
+                                    // Populate the right div with event information
+                                    $(".event-detail").empty();
+                                    $("#name").text(self.info.name);
+                                    $("#time").text(moment(self.info.start).format("dddd, MMMM Do YYYY, h:mm a") + " - " + moment(self.info.end).format("dddd, MMMM Do YYYY, h:mm a"));
+                                    $("#address").empty();
+                                    $("#address").append(self.info.address.address_1 + "</br>" + self.info.address.city + ", " + self.info.address.region + " " + self.info.address.postal_code);
+                                    $("#description").empty();
+                                    $("#description").append(self.info.description);
+                                    $(".event-detail").append($(".template").html());
+                                });
+
+                                markers.push(marker);
+                            }
                         },
                         error: function(xhr, status, error) {
                             console.log("Uh oh there was an error: " + error);
                         }
-                    }).done(function () {
-                        $.ajax({
-                            url: '/getevents',
-                            data: {},
-                            type: 'GET',
-                            success: function(data) {
-                                // for (i=0;i<12;i++) {
-                                for (i=0;i<data.length;i++) {
-                                    var marker = new google.maps.Marker({
-                                        position: {lat: Number(data[i].latitude), lng: Number(data[i].longitude)},
-                                        map: map,
-                                        info: data[i]
-                                    });
-
-                                    // var now = moment("2017-01-21T18:15:00");
-                                    var now = moment();
-
-                                    if (now.isAfter(moment(data[i].end))) {
-                                        marker.setVisible(false);
-                                    }
-                                    else if (now.isBefore(moment(data[i].start))) {
-                                        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
-                                    }
-                                    else if (now.isAfter(moment(data[i].start)) && now.isBefore(moment(data[i].end))) {
-                                        if (now.isAfter(moment(data[i].end).subtract(30, 'minutes'))) {
-                                            marker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
-                                        }
-                                        else {
-                                            marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
-                                        }
-                                    }
-
-                                    marker.addListener('click', function() {
-                                    var self = this;
-
-                                    console.log(self.info);
-                                    $(".event-detail").empty();
-                                    $("#name").text(self.info.name);
-                                    $("#time").text(moment(self.info.start).format("dddd, MMMM Do YYYY, h:mm a") + " - " + moment(self.info.end).format("dddd, MMMM Do YYYY, h:mm a"));
-                                    $("#address").text(self.info.address.address_1 + "</br>" + self.info.address.city + ", " + self.info.address.region + " " + self.info.address.postal_code);
-                                    $("#description").empty();
-                                    $("#description").append(self.info.description);
-                                    $(".event-detail").append($(".template").html());
-                                    });
-
-                                    markers.push(marker);
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.log("Uh oh there was an error: " + error);
-                            }
-                        });
                     });
-                }
+                });
+                
             });
 
-      
         });
         map.fitBounds(bounds);
-  
-        //Mapping the event locations (hard-coded for now)
-        // $.ajax({
-        //     url: '/getevents',
-        //     data: {},
-        //     type: 'GET',
-        //     success: function(data) {
-        //         // for (i=0;i<12;i++) {
-        //         for (i=0;i<data.length;i++) {
-        //             var marker = new google.maps.Marker({
-        //                 position: {lat: Number(data[i].latitude), lng: Number(data[i].longitude)},
-        //                 map: map,
-        //                 info: data[i]
-        //             });
-
-        //             // var now = moment("2017-01-21T18:15:00");
-        //             var now = moment();
-
-        //             if (now.isAfter(moment(data[i].end))) {
-        //                 marker.setVisible(false);
-        //             }
-        //             else if (now.isBefore(moment(data[i].start))) {
-        //                 marker.setIcon("http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
-        //             }
-        //             else if (now.isAfter(moment(data[i].start)) && now.isBefore(moment(data[i].end))) {
-        //                 if (now.isAfter(moment(data[i].end).subtract(30, 'minutes'))) {
-        //                     marker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
-        //                 }
-        //                 else {
-        //                     marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
-        //                 }
-        //             }
-
-        //             marker.addListener('click', function() {
-        //             var self = this;
-
-        //             console.log(self.info);
-        //             $(".event-detail").empty();
-        //             $("#name").text(self.info.name);
-        //             $("#time").text(moment(self.info.start).format("dddd, MMMM Do YYYY, h:mm a") + " - " + moment(self.info.end).format("dddd, MMMM Do YYYY, h:mm a"));
-        //             $("#address").text(self.info.address.address_1 + "</br>" + self.info.address.city + ", " + self.info.address.region + " " + self.info.address.postal_code);
-        //             $("#description").empty();
-        //             $("#description").append(self.info.description);
-        //             $(".event-detail").append($(".template").html());
-        //             });
-
-        //             markers.push(marker);
-        //         }
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.log("Uh oh there was an error: " + error);
-        //     }
-        // });
     });
 }
