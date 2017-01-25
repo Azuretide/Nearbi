@@ -11,23 +11,43 @@ function initMap() {
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('searchBox');
-    var searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-    // Bias the SearchBox results towards current map's viewport.
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setCenter(pos);
+        }, function() {
+            handleLocationError(true, map.getCenter());
+        });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, map.getCenter());
+    }
+      
+
+    function handleLocationError(browserHasGeolocation, pos) {
+        // infoWindow.setPosition(pos);
+        // infoWindow.setContent(browserHasGeolocation ?
+        //                       'Error: The Geolocation service failed.' :
+        //                       'Error: Your browser doesn\'t support geolocation.');
+    }
+
+    // Bias the Autocomplete results towards current map's viewport.
     map.addListener('bounds_changed', function() {
-        searchBox.setBounds(map.getBounds());
+        autocomplete.setBounds(map.getBounds());
     });
 
     var markers = [];
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
-    searchBox.addListener('places_changed', function() {
-        var places = searchBox.getPlaces();
-
-        if (places.length == 0) {
-            return;
-        }
+    autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
 
         // Clear out the old markers.
         markers.forEach(function(marker) {
@@ -37,119 +57,116 @@ function initMap() {
 
         // For each place, get the icon, name and location.
         var bounds = new google.maps.LatLngBounds();
-        places.forEach(function(place) {
-            if (!place.geometry) {
-                console.log("Returned place contains no geometry");
-                return;
-            }
 
-            // Create a marker for each place.
-            var yourIcon = "http://maps.google.com/mapfiles/marker_purple.png";
-            markers.push(new google.maps.Marker({
-                map: map,
-                icon: yourIcon,
-                title: place.name,
-                position: place.geometry.location
-            }));
+        if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+        }
 
-            if (place.geometry.viewport) {
-                // Only geocodes have viewport.
-                bounds.union(place.geometry.viewport);
-            } else {
-                bounds.extend(place.geometry.location);
-            }
+        // Create a marker for each place.
+        var yourIcon = "https://maps.google.com/mapfiles/marker_purple.png";
+        markers.push(new google.maps.Marker({
+            map: map,
+            icon: yourIcon,
+            title: place.name,
+            position: place.geometry.location
+        }));
 
-            //Eventbrite API: Getting the events
-            var lat = "&location.latitude=" + place.geometry.location.lat();
-            var lng = "&location.longitude=" + place.geometry.location.lng();
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&start_date.keyword=today&token=ZYKD3KHDFOVXM5BHSLXO&expand=venue" + lat + lng,
-                "method": "GET",
-                "headers": {}
-            }
+        if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+        } else {
+            bounds.extend(place.geometry.location);
+        }
 
-            $.ajax(settings).done(function (data) {
+        //Eventbrite API: Getting the events
+        var lat = "&location.latitude=" + place.geometry.location.lat();
+        var lng = "&location.longitude=" + place.geometry.location.lng();
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&start_date.keyword=today&token=ZYKD3KHDFOVXM5BHSLXO&expand=venue" + lat + lng,
+            "method": "GET",
+            "headers": {}
+        }
+
+        $.ajax(settings).done(function (data) {
+            $.ajax({
+                url: '/uploadevents',
+                data: {data: data.events},
+                dataType:"json",
+                type: 'POST',
+                success: function(data) {
+                    //Nothing to do here
+                },
+                error: function(xhr, status, error) {
+                    console.log("Uh oh there was an error: " + error);
+                }
+            }).done(function () {
                 $.ajax({
-                    url: '/uploadevents',
-                    data: {data: data.events},
-                    dataType:"json",
-                    type: 'POST',
+                    url: '/getevents',
+                    data: {},
+                    type: 'GET',
                     success: function(data) {
-                        //Nothing to do here
+                        // for (i=0;i<1;i++) {
+                        for (i=0;i<data.length;i++) {
+                            var marker = new google.maps.Marker({
+                                position: {lat: Number(data[i].latitude), lng: Number(data[i].longitude)},
+                                map: map,
+                                animation: null,
+                                icon: "https://maps.google.com/mapfiles/marker_white.png",
+                                info: data[i]
+                            });
+
+                            //Selecting marker color based on event timing
+                            var now = moment();
+                            if (now.isAfter(moment(data[i].end))) {
+                                marker.setVisible(false);
+                            }
+                            else if (now.isBefore(moment(data[i].start))) {
+                                marker.setIcon("https://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
+                            }
+                            else if (now.isAfter(moment(data[i].start)) && now.isBefore(moment(data[i].end))) {
+                                if (now.isAfter(moment(data[i].end).subtract(30, 'minutes'))) {
+                                    marker.setIcon("https://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
+                                }
+                                else {
+                                    marker.setIcon("https://maps.google.com/mapfiles/ms/icons/green-dot.png");
+                                }
+                            }
+
+                            marker.addListener('click', function() {
+                                var self = this;
+
+                                //Toggle bounce animation for selected marker
+                                if (self.getAnimation() !== null) {
+                                    self.setAnimation(null);
+                                } else {
+                                    for (i=0;i<markers.length;i++) {
+                                        markers[i].setAnimation(null);
+                                    }
+                                    self.setAnimation(google.maps.Animation.BOUNCE);
+                                }
+
+                                // Populate the right div with event information
+                                $(".event-detail").empty();
+                                $("#name").text(self.info.name);
+                                $("#time").text(moment(self.info.start).format("dddd, MMMM Do YYYY, h:mm a") + " - " + moment(self.info.end).format("dddd, MMMM Do YYYY, h:mm a"));
+                                $("#address").empty();
+                                $("#address").append(self.info.address.address_1 + "</br>" + self.info.address.city + ", " + self.info.address.region + " " + self.info.address.postal_code);
+                                $("#description").empty();
+                                $("#description").append(self.info.description);
+                                $(".event-detail").append($(".template").html());
+                            });
+
+                            markers.push(marker);
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.log("Uh oh there was an error: " + error);
                     }
-                }).done(function () {
-                    $.ajax({
-                        url: '/getevents',
-                        data: {},
-                        type: 'GET',
-                        success: function(data) {
-                            // for (i=0;i<1;i++) {
-                            for (i=0;i<data.length;i++) {
-                                var marker = new google.maps.Marker({
-                                    position: {lat: Number(data[i].latitude), lng: Number(data[i].longitude)},
-                                    map: map,
-                                    animation: null,
-                                    icon: "http://maps.google.com/mapfiles/marker_white.png",
-                                    info: data[i]
-                                });
-
-                                //Selecting marker color based on event timing
-                                var now = moment();
-                                if (now.isAfter(moment(data[i].end))) {
-                                    marker.setVisible(false);
-                                }
-                                else if (now.isBefore(moment(data[i].start))) {
-                                    marker.setIcon("http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
-                                }
-                                else if (now.isAfter(moment(data[i].start)) && now.isBefore(moment(data[i].end))) {
-                                    if (now.isAfter(moment(data[i].end).subtract(30, 'minutes'))) {
-                                        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
-                                    }
-                                    else {
-                                        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
-                                    }
-                                }
-
-                                marker.addListener('click', function() {
-                                    var self = this;
-
-                                    //Toggle bounce animation for selected marker
-                                    if (self.getAnimation() !== null) {
-                                        self.setAnimation(null);
-                                    } else {
-                                        for (i=0;i<markers.length;i++) {
-                                            markers[i].setAnimation(null);
-                                        }
-                                        self.setAnimation(google.maps.Animation.BOUNCE);
-                                    }
-
-                                    // Populate the right div with event information
-                                    $(".event-detail").empty();
-                                    $("#name").text(self.info.name);
-                                    $("#time").text(moment(self.info.start).format("dddd, MMMM Do YYYY, h:mm a") + " - " + moment(self.info.end).format("dddd, MMMM Do YYYY, h:mm a"));
-                                    $("#address").empty();
-                                    $("#address").append(self.info.address.address_1 + "</br>" + self.info.address.city + ", " + self.info.address.region + " " + self.info.address.postal_code);
-                                    $("#description").empty();
-                                    $("#description").append(self.info.description);
-                                    $(".event-detail").append($(".template").html());
-                                });
-
-                                markers.push(marker);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.log("Uh oh there was an error: " + error);
-                        }
-                    });
                 });
-                
             });
-
         });
         map.fitBounds(bounds);
     });

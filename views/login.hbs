@@ -1,24 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Login</title>
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/stylesheets/login.css' />
   </head>
   <body>
     <form action="/login" method="post">
-      <div>
-        <label>Username:</label>
-        <input type="text" name="username"/>
-      </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" name="password"/>
-      </div>
-      <div>
-        <input type="submit" value="Log In"/>
-      </div>
-      <div style="padding-top: 20px">
-        <a href='/signup'>Sign up!</a>
-      </div>
+      <div class="window">
+        <div class="form">
+          <input type="text" name="username" placeholder="Username"/>
+          <input type="password" name="password" placeholder="Password"/>
+            <input type="submit" value="Log In"/>
+          <a href='/signup'>Or, sign up for free!</a>
+        </div>
     </form>
   </body>
 </html>

@@ -76,10 +76,17 @@ div.search {
     margin: auto;
 }
 
-input {
-  padding: 7px;
-  border-radius: 4px;
+input[type="text"] {
+  display: block;
   width: 400px;
+  background: #fff;
+  border: 0px;
+  padding: 5px;
+  font-size: 16px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 button {

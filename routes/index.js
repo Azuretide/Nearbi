@@ -23,12 +23,12 @@ router.get('/login', function(req, res, next) {
 	if(req.isAuthenticated()) {
 		res.redirect('/');
 	} else {
-		res.render('login', {});
+		res.render('login', {title: 'Login'});
 	}
 });
 
 router.get('/signup', function(req, res, next) {
-	res.render('signup', {});
+	res.render('signup', {title: 'Sign Up'});
 });
 
 router.get('/logout', function(req, res, next) {
@@ -49,7 +49,11 @@ router.post('/login',
 		);
 
 router.post('/signup', function (req, res, next) {
-	console.log('signed up');
+	if (req.body.username === "" || req.body.password === "") {
+		console.log("Missing inforation!");
+		return res.redirect('/signup');
+	}
+
 	var user = new User({username: req.body.username});
 	User.register(user, req.body.password, function(registrationError) {
 		if(!registrationError) {
