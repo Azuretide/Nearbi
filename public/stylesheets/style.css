@@ -22,11 +22,12 @@ ul.navbar {
     top: 0;
 }
 
-li {
+li.nav {
     float: left;
 }
 
 li a, .dropbtn {
+    font: "Segoe UI";
     display: inline-block;
     color: white;
     text-align: center;
@@ -37,7 +38,7 @@ li a, .dropbtn {
 a.nearbi {
     font: 24px "Segoe UI";
     font-weight: bold;
-    padding: 5px;
+    padding: 6px 15px;
 }
 
 li a.dropdown:hover, .dropdown:hover, .login:hover .dropbtn {
@@ -74,10 +75,12 @@ li.dropdown {
 
 div.search {
     margin: auto;
+    padding: 4px;
 }
 
 input[type="text"] {
-  display: block;
+  display: inline-block;
+  height: 20px;
   width: 400px;
   background: #fff;
   border: 0px;
@@ -121,11 +124,18 @@ div.event-pane {
 /*+2px to subtracted height for firefox*/
 
 div.event-detail {
+    font: 16px "Segoe UI";
     max-width: 100%;
     max-height: 100%;
-    padding: 20px;
+    padding: 32px;
+    line-height: 20px;
 }
 
 div.template {
   display: none;
+}
+
+img.legend {
+  margin: auto;
+  display: block;
 }
