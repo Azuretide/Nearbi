@@ -7,16 +7,10 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	//Clear the database
-	Event.remove({}, function(err,result) {
-		if (err) {
-			console.log('An error occurred!');
-		}
-		console.log('Events cleared!');
-	});
 	res.render('index', { 
   	title: 'Nearbi',
-  	user: req.user });
+  	user: req.user,
+  	});
 });
 
 router.get('/login', function(req, res, next) {

@@ -85,7 +85,7 @@ function initMap() {
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&start_date.keyword=today&token=ZYKD3KHDFOVXM5BHSLXO&expand=venue" + lat + lng,
+            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&start_date.keyword=today&token=MFUSAXDCM4W2GBD67JSB&expand=venue" + lat + lng,
             "method": "GET",
             "headers": {}
         }

@@ -23,7 +23,6 @@ var app = express();
 // database setup
 // mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://heroku_b3jftq1d:trniaturuie2ung6rbmsfqcj78@ds139665.mlab.com:39665/heroku_b3jftq1d');
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/test');
-// console.log(process.env);
 var connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.on('connected', function() {
