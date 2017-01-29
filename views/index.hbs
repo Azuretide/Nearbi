@@ -18,7 +18,7 @@
     <ul class="navbar"> <!-- Sourced from w3schools navbar tutorial @http://www.w3schools.com/css/tryit.asp?filename=trycss_dropdown_navbar -->
       <li class="nav"><a href="/" class="nearbi">Nearbi</a></li>
       <li class="nav"><div class='search'>
-        <input type="text" placeholder="Enter a location" id="searchBox">
+        <input type="text" placeholder="Enter a location..." id="searchBox">
         <!-- <button class="search-submit">Search</button> -->
       </div></li>
       <li style="float: right" class="dropdown">
@@ -35,7 +35,8 @@
     </ul>
 
     <div class="map-container">
-      <div id="map"><!-- <input type="text" placeholder="Enter a location" id="searchBox"> --></div>
+      <div id="map"></div>
+      <div id="legend"></div>
       <script src="/js/map.js"></script>
       <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8LjrppzPFMlhNLhUbkBMyMgLgIpAZeFM&libraries=places&callback=initMap">
@@ -46,15 +47,16 @@
       <div class="event-detail">
         <h1>Event Pane</h1>
         <p class="tutorial">Welcome to {{title}}! Event details will show up here. To get started, search for a location and click on a marker on the map.</p>
-        <img src="/images/mapkey.png" alt="Map Key" class="legend" height="275" width="275">
       </div>
     </div>
   
     <div class="template">
-      <h2 id="name">Event Name</h3>
+      <h2 id="name">Event Name</h2>
       <h4 id="time">12:00AM</h4>
       <h4 id="address">100 Wayward Way</h4>
       <div id='description'>Event description goes here!</div>
+      <a href="" id='olink'>View on Eventbrite.com</a>
+      <p></br></p>
     </div>
   </body>
 </html>

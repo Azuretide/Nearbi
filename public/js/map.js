@@ -14,14 +14,16 @@ function initMap() {
     var autocomplete = new google.maps.places.Autocomplete(input);
     // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-    // Try HTML5 geolocation.
+    // Try HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
+            pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            map.setCenter(pos);
+            //Immediately collect events
+            google.maps.event.trigger(autocomplete, 'place_changed');
+
         }, function() {
             handleLocationError(true, map.getCenter());
         });
@@ -32,11 +34,15 @@ function initMap() {
       
 
     function handleLocationError(browserHasGeolocation, pos) {
-        // infoWindow.setPosition(pos);
-        // infoWindow.setContent(browserHasGeolocation ?
-        //                       'Error: The Geolocation service failed.' :
-        //                       'Error: Your browser doesn\'t support geolocation.');
+        console.log("Browser doesn't support geolocation!");
     }
+
+    // Initialize the map legend
+    var legend = document.getElementById('legend');
+    var div = document.createElement('div');
+    div.innerHTML = '<img src="/images/slimlegend.png" alt="Map Key" class="legend" height="125" width="125">';
+    legend.appendChild(div);
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
     // Bias the Autocomplete results towards current map's viewport.
     map.addListener('bounds_changed', function() {
@@ -44,48 +50,59 @@ function initMap() {
     });
 
     var markers = [];
-    // Listen for the event fired when the user selects a prediction and retrieve
-    // more details for that place.
+    // Listen for the event fired when the user selects a prediction and retrieve more details for that place.
     autocomplete.addListener('place_changed', function() {
-        var place = autocomplete.getPlace();
-
         // Clear out the old markers.
         markers.forEach(function(marker) {
             marker.setMap(null);
         });
         markers = [];
 
-        // For each place, get the icon, name and location.
-        var bounds = new google.maps.LatLngBounds();
+        var lat = "&location.latitude=0";
+        var lng = "&location.longitude=0";
+        bounds = new google.maps.LatLngBounds();
 
-        if (!place.geometry) {
-            console.log("Returned place contains no geometry");
-            return;
-        }
+        // Allows events to be searched for based purely on location
+        if (typeof autocomplete.getPlace() === 'undefined') {
+            lat = "&location.latitude=" + String(pos.lat);
+            lng = "&location.longitude=" + String(pos.lng);
 
-        // Create a marker for each place.
-        var yourIcon = "https://maps.google.com/mapfiles/marker_purple.png";
-        markers.push(new google.maps.Marker({
-            map: map,
-            icon: yourIcon,
-            title: place.name,
-            position: place.geometry.location
-        }));
+            markers.push(new google.maps.Marker({
+                map: map,
+                icon: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+                title: 'Current Location',
+                position: pos
+            }));
+            bounds.extend(pos);
+            center = pos;
 
-        if (place.geometry.viewport) {
-            // Only geocodes have viewport.
-            bounds.union(place.geometry.viewport);
         } else {
-            bounds.extend(place.geometry.location);
-        }
+            var place = autocomplete.getPlace();
+    
+            if (!place.geometry) {
+                console.log("Returned place contains no geometry");
+                return;
+            }
 
+            lat = "&location.latitude=" + place.geometry.location.lat();
+            lng = "&location.longitude=" + place.geometry.location.lng();
+
+            markers.push(new google.maps.Marker({
+                map: map,
+                icon: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+                title: place.name,
+                position: place.geometry.location
+            }));   
+
+            bounds.extend(place.geometry.location);
+            center = place.geometry.location
+        }
+        
         //Eventbrite API: Getting the events
-        var lat = "&location.latitude=" + place.geometry.location.lat();
-        var lng = "&location.longitude=" + place.geometry.location.lng();
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20mi&start_date.keyword=today&token=MFUSAXDCM4W2GBD67JSB&expand=venue" + lat + lng,
+            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=15mi&start_date.keyword=today&token=MFUSAXDCM4W2GBD67JSB&expand=venue" + lat + lng,
             "method": "GET",
             "headers": {}
         }
@@ -112,6 +129,8 @@ function initMap() {
                     icon: "https://maps.google.com/mapfiles/marker_white.png",
                     info: event
                 });
+
+                bounds.extend(marker.getPosition());
 
                 //Selecting marker color based on event timing
                 var now = moment();
@@ -152,11 +171,16 @@ function initMap() {
                     $("#description").empty();
                     $("#description").append(self.info.description);
                     $(".event-detail").append($(".template").html());
+                    $("#olink").attr("href", self.info.url);
                 });
 
                 markers.push(marker);
             }
+            map.fitBounds(bounds);
+            map.setCenter(center);
         });
         map.fitBounds(bounds);
+        map.setZoom(13);
+        map.setCenter(center);
     });
 }
