@@ -132,7 +132,7 @@ function initMap() {
         }
 
         //Search based on user preferences
-        if (pref && pref.filter === 'yes') {
+        if (pref && pref.filter === 'yes' && pref.category) {
             var params = "";
             for (i=0;i<pref.category.length;i++) {
                 params += pref.category[i] + ",";
