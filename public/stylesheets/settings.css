@@ -1,0 +1,70 @@
+/*For settings page, similar to login.css*/
+
+html {
+	background: url("../images/flare.png") no-repeat center center fixed;
+	-webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow: auto;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  font: 16px "Segoe UI";
+  color: #009999;
+}
+
+h1 {
+  color: #fff;
+  text-align: center;
+  font: 36px "Segoe UI";
+  font-weight: normal;
+}
+
+.sub1 { display: none; }
+
+#Yes:checked ~ .sub1 {
+    display: block;
+    margin-left: 40px;
+}
+
+ul.options li { 
+  border: 1px transparent solid; 
+  display:inline-block;
+  width:17em;
+}
+
+.content {
+  width: 750px;
+  height: auto;
+  background: #edeff1;
+  margin: 0px auto;
+  padding: 20px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  overflow: auto;
+}
+
+input[type="submit"] {
+  display: block;
+  background: #33cccc;
+  width: 250px;
+  padding: 12px;
+  cursor: pointer;
+  color: #fff;
+  border: 0px;
+  margin: auto;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 17px;
+}
+
+input[type="submit"]:hover {
+  background: #009999
+}

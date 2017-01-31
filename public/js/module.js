@@ -1,16 +1,22 @@
-//Code for elements not tied to API's
+// Code for settings page
 
-// if (typeof(Storage) !== "undefined") {
-//     console.log("session storage available!");
-// } else {
-//     console.log("Sorry! No Web Storage support");
-// }
-
-$(document).ready(function() {
-	$(".search-submit").on('click', function() {
-		console.log("query submitted!");
-		console.log(moment());
-		$(".searchBox").val("");
-	});
-
+$.ajax({
+	url: '/getuser',
+	data: {},
+	type: 'GET',
+	success: function(data) {
+        //Pre-fill form with what user set last time
+        if (data.search.filter === "yes") {
+        	$("input[type=radio][value=yes]").prop("checked",true);
+            for (i=0;i<data.search.category.length;i++) {
+                $("input[type=checkbox][value=" + data.search.category[i] + "]").prop("checked",true);
+            }
+        } else {
+        	$("input[type=radio][value=no]").prop("checked",true);
+        }
+        
+    },
+    error: function(xhr, status, error) {
+        console.log("Uh oh there was an error: " + error);
+    }
 });

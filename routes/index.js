@@ -1,12 +1,14 @@
 var express = require('express');
 var passport = require('passport');
 var User = require('../schemas/user.js');
-var Event = require('../schemas/event');
+var Event = require('../schemas/event.js');
 var router = express.Router();
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	User.remove({});
+
 	res.render('index', { 
   	title: 'Nearbi',
   	user: req.user,
@@ -22,7 +24,7 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/signup', function(req, res, next) {
-	res.render('signup', {title: 'Sign Up'});
+	res.render('signup', {title: 'Register'});
 });
 
 router.get('/logout', function(req, res, next) {
@@ -30,6 +32,23 @@ router.get('/logout', function(req, res, next) {
 	res.redirect('/');
 });
 
+router.get('/settings', function(req, res, next) {
+	if(!req.isAuthenticated()) {
+		res.redirect('/');
+	} else {
+		res.render('settings', {title: 'Settings'});
+	}
+});
+
+router.get('/getuser', function(req, res, next) {
+	if(!req.isAuthenticated()) {
+		res.send({});
+	} else {
+		res.send(req.user);
+	}
+});
+
+// currently unused
 router.get('/getevents', function(req, res, next) {
 	Event.find({}, function(err, events) {
 		res.send(events);
@@ -48,7 +67,7 @@ router.post('/signup', function (req, res, next) {
 		return res.redirect('/signup');
 	}
 
-	var user = new User({username: req.body.username});
+	var user = new User({username: req.body.username, search:{filter:'no', category:[]}});
 	User.register(user, req.body.password, function(registrationError) {
 		if(!registrationError) {
 			req.login(user, function(loginError) {
@@ -62,6 +81,15 @@ router.post('/signup', function (req, res, next) {
 
 });
 
+router.post('/savesettings', function (req, res, next) {
+	User.update({'username':req.user.username}, {$set:{search:req.body}}, {'multi':false}, function (err, changed) {
+		console.log(changed);
+	});
+	console.log(req.user);
+	res.redirect('/');
+});
+
+// Currently unused
 router.post('/uploadevents', function(req, res, next) {
 	var data = req.body.data;
 	
@@ -88,20 +116,6 @@ router.post('/uploadevents', function(req, res, next) {
 		});
 
 		newEvent.save();
-
-		//Check for duplicates (non-working)
-		// Event.find({'id': data[i].id}, function(err, found) {
-		// 	if (err) {
-	 //  			console.log('Error!');
-		// 	}
-
-		// 	if (found.length === 0) {
-	 //  			var self = this;
-	 //  			console.log(self);
-	 //  			// console.log(newEvent.name);
-	 //  			// newEvent.save();
-		// 	}
-		// });
 	}	
 
     res.send({

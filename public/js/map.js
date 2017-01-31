@@ -1,5 +1,22 @@
 // Code for Google Maps Javascript API
 
+//Get the user data if it exists, for searching categories later.
+pref = null;
+$.ajax({
+    url: '/getuser',
+    data: {},
+    type: 'GET',
+    success: function(data) {
+        if (data.search) {
+            pref = data.search;
+        }
+    },
+    error: function(xhr, status, error) {
+        console.log("Uh oh there was an error: " + error);
+    }
+});
+
+// Main function, called when map is initialized
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 42.360, lng: -71.0589},
@@ -97,14 +114,32 @@ function initMap() {
             bounds.extend(place.geometry.location);
             center = place.geometry.location
         }
-        
+
         //Eventbrite API: Getting the events
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=15mi&start_date.keyword=today&token=MFUSAXDCM4W2GBD67JSB&expand=venue" + lat + lng,
+            "url": "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=15mi&token=MFUSAXDCM4W2GBD67JSB&expand=venue" + lat + lng,
             "method": "GET",
             "headers": {}
+        }
+
+        //After 7pm, display tomorrow's events as well
+        if (moment().isAfter(moment().add(1, 'days').startOf('day').subtract(5, 'hours'))) {
+            settings.url += "&start_date.range_start=" + moment().startOf('day').format().substring(0,19) + "&start_date.range_end=" + moment().add(20, 'hours').format().substring(0,19);
+        } else {
+            settings.url += "&start_date.keyword=today";
+        }
+
+        //Search based on user preferences
+        if (pref && pref.filter === 'yes') {
+            var params = "";
+            for (i=0;i<pref.category.length;i++) {
+                params += pref.category[i] + ",";
+            }
+            if (params.length != 0) {
+                settings.url += "&categories=" + params.substring(0,params.length-1);
+            }
         }
 
         $.ajax(settings).done(function (data) {
@@ -132,8 +167,8 @@ function initMap() {
 
                 bounds.extend(marker.getPosition());
 
+                now = moment();
                 //Selecting marker color based on event timing
-                var now = moment();
                 if (now.isAfter(moment(event.end))) {
                     marker.setVisible(false);
                 }

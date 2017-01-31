@@ -1,5 +1,6 @@
 /*CSS for login/signup screens. 
 Originally sourced from http://codepen.io/larrygeams/pen/Itear */
+/*Some parts of this are also found elsewhere in the code, generally wherever there are buttons/inputs.*/
 
 /*Citation: https://css-tricks.com/perfect-full-page-background-image/*/
 html {
@@ -20,17 +21,13 @@ body {
 h1 {
   color: #fff;
   text-align: center;
-  font-family: Arial;
+  font: 36px "Segoe UI";
   font-weight: normal;
-  margin: 2em auto 0px;
 }
 
 .window {
-  /*width: 800px;
-  height: 340px;*/
   width: 100%;
   height: 100%;
-  /*background: #1abc9d;*/
   margin: 0px auto;
   padding-top: 80px;
 }

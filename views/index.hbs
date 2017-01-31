@@ -3,10 +3,8 @@
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <!-- <link rel="shortcut icon" href="favicon.ico" /> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/js/moment.js"></script>
-    <script src="/js/module.js"></script>
     <style>
        #map {
         height: 100%;
@@ -19,13 +17,12 @@
       <li class="nav"><a href="/" class="nearbi">Nearbi</a></li>
       <li class="nav"><div class='search'>
         <input type="text" placeholder="Enter a location..." id="searchBox">
-        <!-- <button class="search-submit">Search</button> -->
       </div></li>
       <li style="float: right" class="dropdown">
         {{#if user}}
         <a href="javascript:void(0)" class="dropbtn">Hi, {{user.username}}</a>
           <div class="dropdown-content">
-            <a href="/#">Account</a>
+            <a href="/settings">Settings</a>
             <a href="/logout">Logout</a>
           </div>
         {{else}}

@@ -122,7 +122,6 @@ div.event-pane {
     height: calc(100% - 44px);
     overflow: auto;
 }
-/*+2px to subtracted height for firefox*/
 
 div.event-detail {
     font: 16px "Segoe UI";
@@ -134,6 +133,27 @@ div.event-detail {
 
 div.template {
     display: none;
+}
+
+#olink {
+  display: block;
+  background: #33cccc;
+  width: 250px;
+  padding: 12px;
+  cursor: pointer;
+  color: #fff;
+  border: 0px;
+  margin: auto;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 17px;
+  text-align: center;
+  text-decoration: none;
+}
+
+#olink:hover {
+  background: #009999
 }
 
 /*Map Legend*/

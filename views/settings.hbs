@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <title>Settings</title>
+	  <link rel='stylesheet' href='/stylesheets/settings.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	  <script src="/js/module.js"></script>
+	</head>
+	<body>
+		<h1>Settings</h1>
+		<div class='content'>
+			<h3>Search Categories</h3>
+			<p>Filter events by category?</p>
+			<form name="search-settings" method="post" action="/savesettings">
+				<input type="radio" name="filter" value="no" id="No" />
+		    <label for="No">No</br></label>
+				<input type="radio" name="filter" value="yes" id="Yes"/>
+		    <label for="Yes">Yes</br></label>
+		    <div class="sub1">
+		      <div>
+		      	<p>Select categories to be included: (You must check at least 1 for categorized search to take effect.)</p>
+		      	<ul class="options">
+			      	<li><input type="checkbox" name="category" value="103"> Music<br></li>
+			  			<li><input type="checkbox" name="category" value="101"> Business and Professional<br></li>
+			  			<li><input type="checkbox" name="category" value="110"> Food and Drink<br></li>
+			  			<li><input type="checkbox" name="category" value="113"> Community and Culture<br></li>
+			  			<li><input type="checkbox" name="category" value="105"> Performing and Visual Arts<br></li>
+			  			<li><input type="checkbox" name="category" value="104"> Film, Media, and Entertainment<br></li>
+			  			<li><input type="checkbox" name="category" value="108"> Sports and Fitness<br></li>
+			  			<li><input type="checkbox" name="category" value="107"> Health and Wellness<br></li>
+			  			<li><input type="checkbox" name="category" value="102"> Science and Technology<br></li>
+			  			<li><input type="checkbox" name="category" value="109"> Travel and Outdoor<br></li>
+			  			<li><input type="checkbox" name="category" value="111"> Charity and Causes<br></li>
+			  			<li><input type="checkbox" name="category" value="114"> Religion and Spirituality<br></li>
+			  			<li><input type="checkbox" name="category" value="115"> Family and Education<br></li>
+			  			<li><input type="checkbox" name="category" value="116"> Seasonal and Holiday<br></li>
+			  			<li><input type="checkbox" name="category" value="112"> Government and Politics<br></li>
+			  			<li><input type="checkbox" name="category" value="106"> Fashion and Beauty<br></li>
+			  			<li><input type="checkbox" name="category" value="117"> Home and Lifestyle<br></li>
+			  			<li><input type="checkbox" name="category" value="118"> Auto, Boat and Air<br></li>
+			  			<li><input type="checkbox" name="category" value="119"> Hobbies and Special Interest<br></li>
+			  			<li><input type="checkbox" name="category" value="199"> Other<br></li>
+		      	</ul>
+		      </div>
+		    </div>
+		    <input type="submit" value="Save">
+		  </form>
+		</div>
+	</body>
+</html>
