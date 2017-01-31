@@ -43,7 +43,13 @@
     <div class="event-pane">
       <div class="event-detail">
         <h1>Event Pane</h1>
-        <p class="tutorial">Welcome to {{title}}! Event details will show up here. To get started, search for a location and click on a marker on the map.</p>
+        <p class="tutorial">Welcome to {{title}}!</p>
+        <p>Discover what's happening around you in the near future - to get started, enable location services or search for a location, then click on a marker on the map. Event details will show up here.</p>
+        {{#if user}}
+        <p>To filter events by category, go to <a href="/settings">Settings</a> and change your preferences there!</p>
+        {{else}}
+        <p>To enable filtering events by category, please <a href="/login">Login</a> or <a href="/signup">Sign Up</a> for a free account!</p>
+        {{/if}}
       </div>
     </div>
   

@@ -176,7 +176,7 @@ function initMap() {
                     marker.setIcon("https://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
                 }
                 else if (now.isAfter(moment(event.start)) && now.isBefore(moment(event.end))) {
-                    if (now.isAfter(moment(event.end).subtract(30, 'minutes'))) {
+                    if (now.isAfter(moment(event.end).subtract(50, 'minutes'))) {
                         marker.setIcon("https://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
                     }
                     else {

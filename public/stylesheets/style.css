@@ -11,6 +11,11 @@ body {
     max-height: 100%;
 }
 
+.event-pane span {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 /*Navigation Bar, some aspects sourced from w3schools.com*/
 ul.navbar {
     font: 14px "Segoe UI", sans-serif;
@@ -37,7 +42,7 @@ li a, .dropbtn {
 }
 
 a.nearbi {
-    font: 24px "Segoe UI, sans-serif";
+    font: 24px "Segoe UI", sans-serif;
     font-weight: bold;
     padding: 5px 15px;
 }
